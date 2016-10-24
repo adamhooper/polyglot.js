@@ -34,7 +34,7 @@ function Polyglot(options) {
   this.phrases = {};
   this.extend(opts.phrases || {});
   this.currentLocale = opts.locale || 'en';
-  this.numberFormat = opts.numberFormat || { format: String };
+  this.numberFormat = opts.numberFormat || String;
   this.allowMissing = !!opts.allowMissing;
   this.warn = opts.warn || warn;
 }
@@ -299,7 +299,7 @@ function interpolate(phrase, options, numberFormat) {
 
     var replacement = options[argument];
     if (typeof replacement === 'number') {
-      replacement = numberFormat.format(replacement);
+      replacement = numberFormat(replacement);
     }
     // Ensure replacement value is escaped to prevent special $-prefixed regex replace tokens.
     return replace.call(replacement, dollarRegex, dollarBillsYall);
