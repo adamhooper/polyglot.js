@@ -125,6 +125,38 @@ describe('pluralize', function () {
     expect(polyglot.t('count_name', 2)).to.equal('2 Names');
     expect(polyglot.t('count_name', 3)).to.equal('3 Names');
   });
+
+  it('ignores a region subtag when choosing a pluralization rule', function () {
+    var instance = new Polyglot({ phrases: phrases, locale: 'fr-FR' });
+    // French rule: "0" is singular
+    expect(instance.t('count_name', 0)).to.equal('0 Name');
+  });
+});
+
+describe('locale-specific pluralization rules', function () {
+  it('pluralizes in Arabic', function () {
+    // English would be: "1 vote" / "%{smart_count} votes"
+    var whatSomeoneTranslated = [
+      'ولا صوت',
+      'صوت واحد',
+      'صوتان',
+      '%{smart_count} أصوات',
+      '%{smart_count} صوت',
+      '%{smart_count} صوت'
+    ];
+    var phrases = {
+      n_votes: whatSomeoneTranslated.join(' |||| ')
+    };
+
+    var polyglot = new Polyglot({ phrases: phrases, locale: 'ar' });
+
+    expect(polyglot.t('n_votes', 0)).to.equal('ولا صوت');
+    expect(polyglot.t('n_votes', 1)).to.equal('صوت واحد');
+    expect(polyglot.t('n_votes', 2)).to.equal('صوتان');
+    expect(polyglot.t('n_votes', 3)).to.equal('3 أصوات');
+    expect(polyglot.t('n_votes', 11)).to.equal('11 صوت');
+    expect(polyglot.t('n_votes', 102)).to.equal('102 صوت');
+  });
 });
 
 describe('locale', function () {
