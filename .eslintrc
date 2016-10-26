@@ -10,6 +10,7 @@
   "rules": {
     "comma-dangle": [2, "never"],
     "func-names": 0,
+    "no-restricted-syntax": [ "error", "ForOfStatement", "LabeledStatement", "WithStatement" ],
     "no-use-before-define": 1,
     "no-var": 0,
     "object-shorthand": 0,

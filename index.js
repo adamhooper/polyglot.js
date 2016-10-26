@@ -17,14 +17,37 @@
 
 'use strict';
 
-var assign = require('object.assign');
-var forEach = require('for-each');
 var warning = require('warning');
-var has = require('has');
 
 var warn = function warn(message) {
   warning(false, message);
 };
+
+function has(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
+function forEach(arrayOrObject, callback, context) {
+  var ctx = typeof context === 'undefined' ? this : context;
+
+  switch (Object.prototype.toString.call(arrayOrObject)) {
+    case '[object Array]':
+      for (var i = 0; i < arrayOrObject.length; i += 1) {
+        callback.call(ctx, arrayOrObject[i]);
+      }
+      break;
+    case '[object Object]':
+      for (var key in arrayOrObject) {
+        if (has(arrayOrObject, key)) {
+          var value = arrayOrObject[key];
+          callback.call(ctx, value, key);
+        }
+      }
+      break;
+    default:
+      // do nothing
+  }
+}
 
 var replace = String.prototype.replace;
 
@@ -198,7 +221,6 @@ Polyglot.prototype.t = function (key, options) {
     result = key;
   }
   if (typeof phrase === 'string') {
-    opts = assign({}, opts);
     result = choosePluralForm(phrase, this.currentLocale, opts.smart_count);
     result = interpolate(result, opts, this.numberFormat);
   }
